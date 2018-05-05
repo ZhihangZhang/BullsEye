@@ -12,10 +12,17 @@ class ViewController: UIViewController {
     //MARK: Propertie
     var currentSliderValue: Int = 0
     var targetValue: Int = 0
+    var points: Int = 0
+    var round: Int = 0
+    
     
     //MARK: Outlets
     @IBOutlet weak var slider: UISlider!
     @IBOutlet weak var targetValueLabel: UILabel!
+    @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet weak var roundLabel: UILabel!
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,11 +38,23 @@ class ViewController: UIViewController {
     
     //MARK: Actions
     @IBAction func showAlert(){
-        let alertMessage = "The value of slider is \(currentSliderValue)" + "\nThe target value is \(targetValue)\n"
-        let alert = UIAlertController(title: "Result", message: alertMessage, preferredStyle: .alert)
+        
+        // update points and round
+        let gain = calculatePoints(inputValue: currentSliderValue, targetValue: targetValue)
+        points += gain
+        
+        // configure alert and action
+
+        let alertMessage = "You gained \(gain) this round.\n"
+            + "You have \(points) points in total!"
+        
+        
+        let alert = UIAlertController(title: "Yo!", message: alertMessage, preferredStyle: .alert)
         let action = UIAlertAction(title: "Done", style: .default, handler: nil)
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
+        
+        // start a new round
         startNewRound()
     }
     
@@ -50,11 +69,19 @@ class ViewController: UIViewController {
     func startNewRound(){
         targetValue = 1 + Int(arc4random_uniform(100))
         // reset the slider position and value if you want, but i prefer not to reset it
-        updateLabels()
+
+        round+=1
+        updateTargetLabel()
     }
     
-    func updateLabels(){
+    func updateTargetLabel(){
         targetValueLabel.text = String(targetValue)
+        scoreLabel.text = String(points)
+        roundLabel.text = String(round)
+    }
+    
+    func calculatePoints(inputValue: Int, targetValue: Int) -> Int{
+        return 100 - abs(inputValue - targetValue)
     }
 }
 
