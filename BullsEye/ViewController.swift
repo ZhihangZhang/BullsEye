@@ -27,7 +27,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         currentSliderValue = lroundf(slider.value) // it is redundant if you decided to reset the value in the startNewRound method
-        startNewRound()
+        startOver()
     }
 
     override func didReceiveMemoryWarning() {
@@ -38,24 +38,30 @@ class ViewController: UIViewController {
     
     //MARK: Actions
     @IBAction func showAlert(){
+        // local variables
+        let bonus = 100
         
         // update points and round
-        let gain = calculatePoints(inputValue: currentSliderValue, targetValue: targetValue)
+        let diff = abs(currentSliderValue - targetValue)
+        var gain = calculatePoints(inputValue: currentSliderValue, targetValue: targetValue)
         points += gain
+        //bonus if perfect case
+        if diff == 0 {
+            points += bonus
+            gain += bonus
+        }
         
         // configure alert and action
-
         let alertMessage = "You gained \(gain) this round.\n"
             + "You have \(points) points in total!"
+        let alertTitle = calculateTitleForAlert(difference: diff)
         
-        
-        let alert = UIAlertController(title: "Yo!", message: alertMessage, preferredStyle: .alert)
-        let action = UIAlertAction(title: "Done", style: .default, handler: nil)
+        let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
+        let action = UIAlertAction(title: "Continue", style: .default, handler: {action in self.startNewRound()})
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
         
-        // start a new round
-        startNewRound()
+        // a new round as the callback function is executed when the action button is pressed
     }
     
     //gets called when the slider moves
@@ -64,6 +70,12 @@ class ViewController: UIViewController {
     }
 
 
+    
+    @IBAction func startOver(){
+        points = 0
+        round = 0
+        startNewRound()
+    }
     
     //MARK: functions
     func startNewRound(){
@@ -82,6 +94,18 @@ class ViewController: UIViewController {
     
     func calculatePoints(inputValue: Int, targetValue: Int) -> Int{
         return 100 - abs(inputValue - targetValue)
+    }
+    
+    func calculateTitleForAlert(difference: Int) -> String{
+        if difference == 0 {
+            return "Perfect!"
+        } else if difference < 5 {
+            return "Almost There!"
+        } else if difference < 10 {
+            return "Not bad!"
+        } else {
+            return "Not even close :("
+        }
     }
 }
 
