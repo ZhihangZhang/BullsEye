@@ -16,11 +16,11 @@ class AboutViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if let url = Bundle.main.url(forResource: "BullsEye", withExtension: "html"){
-            if let htmlData = try? Data(contentsOf: url){
-                let baseURL = URL(fileURLWithPath: Bundle.main.bundlePath)
+        if let url = Bundle.main.url(forResource: "BullsEye", withExtension: "html"){           // finding the path to the .html file in the current bundle
+            if let htmlData = try? Data(contentsOf: url){                                       // try to construct a data buffer for the file
+                let baseURL = URL(fileURLWithPath: Bundle.main.bundlePath)                      // create base url
                 
-                webView.load(htmlData, mimeType: "text/html", textEncodingName: "UTF-8", baseURL: baseURL)
+                webView.load(htmlData, mimeType: "text/html", textEncodingName: "UTF-8", baseURL: baseURL) // load the html file into the web view
             }
         }
     }

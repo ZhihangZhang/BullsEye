@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import QuartzCore
 
 class ViewController: UIViewController {
     //MARK: Propertie
@@ -95,6 +96,13 @@ class ViewController: UIViewController {
         points = 0
         round = 0
         startNewRound()
+        
+        //Animated transition
+        let transition = CATransition()
+        transition.type = kCATransitionFade
+        transition.duration = 1
+        transition.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut)
+        view.layer.add(transition, forKey: nil)
     }
     
     //MARK: functions
